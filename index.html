@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Survei Bolpoin</title>
+<meta name="description" content="Survei singkat tentang merek, tinta, dan kebiasaan menulis dengan bolpoin.">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0F1B3D;--blue:#2B4CFF;--paper:#F3F6FB;--line:#D9E0EE;--muted:#56628560;--text2:#4A5677;--red:#D92D3A;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Figtree',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:'Bricolage Grotesque','Figtree',system-ui,sans-serif;line-height:1.1;letter-spacing:-.02em}
+.wrap{width:min(920px,100% - 40px);margin-inline:auto}
+#progress{position:fixed;inset:0 0 auto 0;height:3px;background:var(--blue);transform:scaleX(0);transform-origin:left;z-index:50}
+
+/* Hero */
+.hero{position:relative;min-height:92vh;display:flex;align-items:center;padding:80px 0 60px;overflow:hidden}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{font-size:clamp(2.4rem,7.5vw,5rem);font-weight:800;max-width:14ch}
+.hero p{margin:22px 0 34px;max-width:46ch;font-size:1.1rem;color:var(--text2)}
+.scribble{position:absolute;left:0;right:0;bottom:8%;width:100%;height:38%;z-index:0}
+.scribble path{fill:none;stroke:var(--blue);stroke-width:5;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;opacity:.85}
+.js .scribble path{animation:draw 2.6s .5s var(--ease) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hero .fade{opacity:0;transform:translateY(24px);animation:up .9s var(--ease) forwards}
+.hero h1.fade{animation-delay:.1s}.hero p.fade{animation-delay:.3s}.hero a.fade{animation-delay:.5s}
+@keyframes up{to{opacity:1;transform:none}}
+.btn{display:inline-block;background:var(--blue);color:#fff;font:600 1rem 'Figtree',sans-serif;padding:15px 30px;border:0;border-radius:999px;cursor:pointer;text-decoration:none;transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .2s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(43,76,255,.28)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{background:#8C9AD9;cursor:wait;transform:none;box-shadow:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff;box-shadow:none}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+/* Sections */
+section{padding:72px 0}
+.title{font-size:clamp(1.7rem,4.5vw,2.6rem);font-weight:800;margin-bottom:12px}
+.lead{color:var(--text2);max-width:52ch;margin-bottom:36px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(20px,4vw,34px)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;font-family:'Bricolage Grotesque',sans-serif;margin-bottom:14px}
+.step h3{font-size:1.15rem;margin-bottom:6px}
+.step p{color:var(--text2);font-size:.95rem}
+
+/* Reveal saat scroll */
+.js .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease) var(--d,0s),transform .9s var(--ease) var(--d,0s)}
+.js .reveal.in{opacity:1;transform:none}
+.steps .reveal:nth-child(2){--d:.12s}.steps .reveal:nth-child(3){--d:.24s}
+
+/* Form */
+form{display:grid;gap:20px}
+.q{border:0;margin-bottom:26px;min-width:0}
+.q:last-child{margin-bottom:0}
+.q legend{font-weight:600;font-size:1.05rem;margin-bottom:12px;padding:0}
+.q small{display:block;color:var(--text2);font-weight:400;font-size:.88rem}
+.err{display:none;color:var(--red);font-size:.88rem;margin-top:8px}
+.q.invalid .err{display:block;animation:shake .4s}
+.q.invalid input[type=text]{border-color:var(--red)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;cursor:pointer;margin:0}
+.chip span{display:block;padding:10px 18px;border:1.5px solid var(--line);border-radius:999px;background:#fff;font-weight:500;transition:background .25s,color .25s,border-color .25s,transform .25s var(--ease)}
+.chip:hover span{border-color:var(--blue);transform:translateY(-2px)}
+.chip input:checked+span{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
+.rate .chip span{width:50px;height:50px;padding:0;display:grid;place-items:center;border-radius:50%;font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem}
+.rate-note{display:flex;justify-content:space-between;max-width:300px;font-size:.82rem;color:var(--text2);margin-top:8px}
+input[type=text],textarea{width:100%;font:inherit;padding:13px 16px;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);transition:border-color .25s,box-shadow .25s}
+input[type=text]:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 4px rgba(43,76,255,.15)}
+textarea{min-height:110px;resize:vertical}
+.notice{padding:14px 18px;border-radius:14px;background:#FDECEE;color:#8E1B25;font-weight:500;animation:up .5s var(--ease)}
+.notice.ok{background:#E7F6EC;color:#14602E}
+.thanks{text-align:center;padding:48px 24px}
+.thanks svg{width:76px;height:76px;margin-bottom:14px}
+.thanks circle{fill:none;stroke:var(--blue);stroke-width:4;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s var(--ease) forwards}
+.thanks path{fill:none;stroke:var(--blue);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .6s .8s var(--ease) forwards}
+.thanks h3{font-size:1.7rem;margin-bottom:8px}
+.thanks p{color:var(--text2);margin-bottom:22px}
+
+/* Hasil */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px}
+.stat b{display:block;font:800 clamp(2rem,6vw,3rem)/1 'Bricolage Grotesque',sans-serif;color:var(--blue)}
+.stat span{color:var(--text2)}
+.results{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.results h3{font-size:1.2rem;margin-bottom:18px}
+.bar{display:grid;grid-template-columns:96px 1fr 44px;gap:12px;align-items:center;margin-bottom:12px;font-size:.95rem}
+.bar b{text-align:right;font-weight:600}
+.track{height:12px;background:#E8EDF7;border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;width:0;background:var(--blue);border-radius:inherit;transition:width 1.2s var(--ease)}
+.bar.in .track i{width:var(--w)}
+.empty{color:var(--text2)}
+footer{padding:40px 0 60px;text-align:center;color:var(--text2);font-size:.9rem}
+
+@media(max-width:700px){
+  .steps,.results{grid-template-columns:1fr}
+  section{padding:52px 0}
+  .bar{grid-template-columns:84px 1fr 40px}
+  .hero{min-height:88vh}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .js .reveal{opacity:1;transform:none}
+  .hero .fade{opacity:1;transform:none}
+  .scribble path,.thanks circle,.thanks path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div id="progress" aria-hidden="true"></div>
+
+<header class="hero">
+  <svg class="scribble" viewBox="0 0 1280 240" preserveAspectRatio="none" aria-hidden="true">
+    <path pathLength="1" d="M0 130 C 120 20, 200 230, 320 130 S 520 20, 640 130 S 840 230, 960 130 S 1160 20, 1280 130"/>
+  </svg>
+  <div class="wrap">
+    <h1 class="fade">Bolpoin mana yang paling nyaman di tanganmu?</h1>
+    <p class="fade">Jawab 9 pertanyaan singkat tentang merek, tinta, dan kebiasaan menulismu. Hasilnya langsung terkumpul dan bisa kamu lihat di bawah.</p>
+    <a class="btn fade" href="#survei">Mulai isi survei</a>
+  </div>
+</header>
+
+<section id="cara">
+  <div class="wrap">
+    <h2 class="title reveal">Cara ikut survei</h2>
+    <p class="lead reveal" style="--d:.08s">Tidak perlu daftar. Cukup dua menit.</p>
+    <div class="steps">
+      <div class="card step reveal"><b>1</b><h3>Kenalan dulu</h3><p>Isi namamu dan pilih statusmu.</p></div>
+      <div class="card step reveal"><b>2</b><h3>Pilih bolpoinmu</h3><p>Merek, jenis tinta, dan ukuran mata pena favoritmu.</p></div>
+      <div class="card step reveal"><b>3</b><h3>Kirim jawaban</h3><p>Lihat hasil sementara dari semua responden.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="survei">
+  <div class="wrap">
+    <h2 class="title reveal">Isi survei</h2>
+    <p class="lead reveal" style="--d:.08s">Semua pertanyaan bertanda wajib, kecuali faktor penting dan saran.</p>
+
+    <div id="notice" class="notice" role="alert" hidden></div>
+
+    <form id="surveyForm" novalidate>
+      <div class="card reveal">
+        <div class="q" data-q>
+          <label for="nama" class="legend" style="font-weight:600;display:block;margin-bottom:12px">Siapa namamu?</label>
+          <input type="text" id="nama" name="nama" maxlength="60" autocomplete="name" placeholder="Nama lengkap atau panggilan">
+          <p class="err">Isi namamu dulu.</p>
+        </div>
+        <fieldset class="q" data-q>
+          <legend>Apa statusmu saat ini?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="status" value="Pelajar"><span>Pelajar</span></label>
+            <label class="chip"><input type="radio" name="status" value="Mahasiswa"><span>Mahasiswa</span></label>
+            <label class="chip"><input type="radio" name="status" value="Pekerja"><span>Pekerja</span></label>
+            <label class="chip"><input type="radio" name="status" value="Lainnya"><span>Lainnya</span></label>
+          </div>
+          <p class="err">Pilih salah satu status.</p>
+        </fieldset>
+      </div>
+
+      <div class="card reveal">
+        <fieldset class="q" data-q>
+          <legend>Merek bolpoin yang paling sering kamu pakai?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="merek" value="Pilot"><span>Pilot</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Standard"><span>Standard</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Faber-Castell"><span>Faber-Castell</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Snowman"><span>Snowman</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Joyko"><span>Joyko</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Kenko"><span>Kenko</span></label>
+            <label class="chip"><input type="radio" name="merek" value="Lainnya"><span>Lainnya</span></label>
+          </div>
+          <p class="err">Pilih satu merek.</p>
+        </fieldset>
+        <fieldset class="q" data-q>
+          <legend>Jenis tinta yang kamu suka?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="tinta" value="Ballpoint"><span>Ballpoint</span></label>
+            <label class="chip"><input type="radio" name="tinta" value="Gel"><span>Gel</span></label>
+            <label class="chip"><input type="radio" name="tinta" value="Rollerball"><span>Rollerball</span></label>
+          </div>
+          <p class="err">Pilih satu jenis tinta.</p>
+        </fieldset>
+        <fieldset class="q" data-q>
+          <legend>Ukuran mata pena favorit?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="ukuran" value="0.3 mm"><span>0,3 mm</span></label>
+            <label class="chip"><input type="radio" name="ukuran" value="0.5 mm"><span>0,5 mm</span></label>
+            <label class="chip"><input type="radio" name="ukuran" value="0.7 mm"><span>0,7 mm</span></label>
+            <label class="chip"><input type="radio" name="ukuran" value="1.0 mm"><span>1,0 mm</span></label>
+          </div>
+          <p class="err">Pilih satu ukuran.</p>
+        </fieldset>
+      </div>
+
+      <div class="card reveal">
+        <fieldset class="q" data-q>
+          <legend>Seberapa sering kamu menulis dengan bolpoin?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="frekuensi" value="Setiap hari"><span>Setiap hari</span></label>
+            <label class="chip"><input type="radio" name="frekuensi" value="Beberapa kali seminggu"><span>Beberapa kali seminggu</span></label>
+            <label class="chip"><input type="radio" name="frekuensi" value="Jarang"><span>Jarang</span></label>
+          </div>
+          <p class="err">Pilih satu frekuensi.</p>
+        </fieldset>
+        <fieldset class="q" data-q>
+          <legend>Harga wajar untuk satu bolpoin?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="harga" value="Di bawah Rp3.000"><span>Di bawah Rp3.000</span></label>
+            <label class="chip"><input type="radio" name="harga" value="Rp3.000 - Rp5.000"><span>Rp3.000 - Rp5.000</span></label>
+            <label class="chip"><input type="radio" name="harga" value="Rp5.000 - Rp10.000"><span>Rp5.000 - Rp10.000</span></label>
+            <label class="chip"><input type="radio" name="harga" value="Di atas Rp10.000"><span>Di atas Rp10.000</span></label>
+          </div>
+          <p class="err">Pilih satu rentang harga.</p>
+        </fieldset>
+      </div>
+
+      <div class="card reveal">
+        <fieldset class="q rate" data-q>
+          <legend>Seberapa nyaman bolpoin yang kamu pakai sekarang?</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="rating" value="1"><span>1</span></label>
+            <label class="chip"><input type="radio" name="rating" value="2"><span>2</span></label>
+            <label class="chip"><input type="radio" name="rating" value="3"><span>3</span></label>
+            <label class="chip"><input type="radio" name="rating" value="4"><span>4</span></label>
+            <label class="chip"><input type="radio" name="rating" value="5"><span>5</span></label>
+          </div>
+          <div class="rate-note"><span>Kurang nyaman</span><span>Sangat nyaman</span></div>
+          <p class="err">Beri nilai 1 sampai 5.</p>
+        </fieldset>
+        <fieldset class="q">
+          <legend>Apa yang paling penting bagimu? <small>Boleh pilih lebih dari satu.</small></legend>
+          <div class="chips">
+            <label class="chip"><input type="checkbox" name="faktor" value="Tinta tidak belepotan"><span>Tinta tidak belepotan</span></label>
+            <label class="chip"><input type="checkbox" name="faktor" value="Genggaman nyaman"><span>Genggaman nyaman</span></label>
+            <label class="chip"><input type="checkbox" name="faktor" value="Tulisan halus"><span>Tulisan halus</span></label>
+            <label class="chip"><input type="checkbox" name="faktor" value="Awet"><span>Awet</span></label>
+            <label class="chip"><input type="checkbox" name="faktor" value="Harga murah"><span>Harga murah</span></label>
+            <label class="chip"><input type="checkbox" name="faktor" value="Desain menarik"><span>Desain menarik</span></label>
+          </div>
+        </fieldset>
+        <div class="q">
+          <label for="saran" style="font-weight:600;display:block;margin-bottom:12px">Saran atau cerita tentang bolpoin idealmu <small>Opsional.</small></label>
+          <textarea id="saran" name="saran" maxlength="500"></textarea>
+        </div>
+        <button type="submit" id="submitBtn" class="btn">Kirim jawaban</button>
+      </div>
+    </form>
+
+    <div id="thanks" class="card thanks" hidden>
+      <svg viewBox="0 0 76 76" aria-hidden="true"><circle pathLength="1" cx="38" cy="38" r="34"/><path pathLength="1" d="M23 39 l10 10 l21 -22"/></svg>
+      <h3>Jawabanmu sudah terkirim</h3>
+      <p>Terima kasih sudah ikut. Hasil sementara ada di bagian bawah.</p>
+      <button type="button" id="again" class="btn ghost">Isi survei lagi</button>
+    </div>
+  </div>
+</section>
+
+<section id="hasil">
+  <div class="wrap">
+    <h2 class="title reveal">Hasil sementara</h2>
+    <p class="lead reveal" style="--d:.08s">Diperbarui setiap ada jawaban baru.</p>
+    <div class="stats">
+      <div class="card stat reveal"><b id="total">0</b><span>responden</span></div>
+      <div class="card stat reveal" style="--d:.12s"><b id="avg">-</b><span>rata-rata kenyamanan (dari 5)</span></div>
+    </div>
+    <div class="results">
+      <div class="card reveal"><h3>Merek favorit</h3><div id="resMerek"><p class="empty">Memuat hasil...</p></div></div>
+      <div class="card reveal" style="--d:.12s"><h3>Jenis tinta</h3><div id="resTinta"><p class="empty">Memuat hasil...</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">Survei Bolpoin</div></footer>
+
+<script src="app.js"></script>
+</body>
+</html>
